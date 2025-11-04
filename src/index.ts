@@ -11,8 +11,17 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
+import { Kysely } from 'kysely';
+import { D1Dialect } from 'kysely-d1';
+
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
+		// start: update
+		const db = new Kysely({
+			dialect: new D1Dialect({ database: env.DB }),
+		});
+		const table_metadata = await db.introspection.getTables();
+		// end: update
 		return new Response('Hello World!');
 	},
 } satisfies ExportedHandler<Env>;
